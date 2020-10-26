@@ -1,4 +1,4 @@
-# JapaneseEnglishTranslator
+# Japanese English Translator
 CS421 Final Project
 
 

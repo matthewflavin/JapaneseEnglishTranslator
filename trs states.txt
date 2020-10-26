@@ -1,0 +1,47 @@
+TRS q0 FINAL
+c -> qc
+t -> qt
+s -> qs
+vowel -> q0q1
+bmknhrpg -> qy
+dwzyj -> qsa
+
+TRS q1
+n -> q0
+
+TRS qy 
+vowel -> q0q1
+y -> qsa
+dwzyj -> q1
+
+TRS qt
+vowel -> q0q1
+s -> qsa
+
+TRS qc 
+h -> qsa
+
+TRS qsa
+vowel -> q0q1
+
+TRS qs
+h -> qsa
+vowel -> q0q1
+
+TRS q0q1 FINAL
+c -> qc
+t -> qt
+vowel -> q0q1
+bmkhrpg -> qy NO N HERE
+dwzyj -> qsa
+s -> qs
+n -> q0qy
+
+TRS q0qy FINAL
+c -> qc
+t -> qt
+s -> qs
+vowel -> q0q1
+bmknhrpg -> qy
+dwzyj -> qsa
+y -> qsa
