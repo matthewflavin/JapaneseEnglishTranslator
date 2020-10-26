@@ -19,13 +19,10 @@ bool IsConstantPairStarter(char token);
 bool IsConstantPairStarterVariant(char token);
 bool IsConstantNotPairStarter(char token);
 
-
 // MAIN()
 // DRIVER CODE GOES HERE
 int main()
 {
-
-
     // Matthew -
     // This is the code I was using to test the functions.
     // It does not match his requirements, I don't think.
