@@ -40,9 +40,10 @@ bool word (string word)
         // Begin looping through the input word.
         for (int i = 0; i < word.size(); i++)
         {
+
             // Get the current toke at the loop index.
             currentToken = word[i];
-
+ 
             // Debug Line
             // cout << "Current state is: " << currentState << endl;
             // cout << "Current token is: " << currentToken << endl;
@@ -65,7 +66,7 @@ bool word (string word)
                 else if (IsConstantPairStarter(currentToken))
                     currentState = qy;
                 
-                else if (IsConstantPairStarter(currentToken))
+                else if (IsConstantNotPairStarter(currentToken))
                     currentState = qsa;
 
                 // No found path, error.
@@ -89,13 +90,25 @@ bool word (string word)
             else if (currentState == qy)
             {
                 if (IsVowel(currentToken))
+                {
                     currentState = q0q1;
+                    //cout << "In Vowel" << endl;
+                }
+
 
                 else if (currentToken == 'y')
+                {
                     currentState = qsa;
+                    //cout << "In y" << endl;
+                }
+
 
                 else if (IsConstantNotPairStarter(currentToken))
+                {
                     currentState = q1;
+                    //cout << "CNPS" << endl;
+                }
+
 
                 else
                     currentState = ERROR;
@@ -107,7 +120,7 @@ bool word (string word)
                 if (IsVowel(currentToken))
                     currentState = q0q1;
 
-                else if (currentToken = 's')
+                else if (currentToken == 's')
                     currentState = qsa;
 
                 else
@@ -148,7 +161,7 @@ bool word (string word)
             }
 
             // TRANSITION STATE: q0q1 ---------------------------------------
-            else if (currentState = q0q1)
+            else if (currentState == q0q1)
             {
                 if (currentToken == 'c')
                     currentState = qc;
@@ -190,13 +203,13 @@ bool word (string word)
                 else if (IsVowel(currentToken))
                     currentState = q0q1;
 
-                else if (IsConstantPairStarter(currentToken))
+                else if (IsConstantPairStarterVariant(currentToken))
                     currentState = qy;
 
                 else if (IsConstantNotPairStarter(currentToken))
                     currentState = qsa;
 
-                else if (currentToken = 'y')
+                else if (currentToken == 'y')
                     currentState = qsa;
 
                 else
@@ -204,7 +217,7 @@ bool word (string word)
             }
 
             // The DFA could not continue, lexical error. Break loop.
-            else if (currentState = ERROR)
+            else if (currentState == ERROR)
             {
                 break;
             }
@@ -257,7 +270,7 @@ string tokenName[30] = {"ERROR", "EOFM", "PERIOD", "WORD1", "WORD2", "VERB", "VE
 // ** Do not require any file input for this. Hard code the table.
 // ** a.out should work without any additional files.
 
-string reservedWords[18] = {"masu", "masen", "mashita", "masendeshita", "desu", "deshita", "o", "wa", "ni", "watashi", "anata", "kare", "kanojo", "sore", "mata", "soshite", "skikashi", "dakara"};
+string reservedWords[18] = {"masu", "masen", "mashita", "masendeshita", "desu", "deshita", "o", "wa", "ni", "watashi", "anata", "kare", "kanojo", "sore", "mata", "soshite", "shikashi", "dakara"};
 
 
 // ------------ Scanner and Driver ----------------------- 
@@ -304,40 +317,57 @@ int scanner(tokentype& tt, string& w)
   
   int arrsize = sizeof(reservedWords)/sizeof(reservedWords[0]); // get the size of the array
 
-  if(valid == true){
-    for(int x = 0; x < arrsize; x++){// check to see if w matches a word from the reserved word list
-      if(w == reservedWords[x]){ // if it does match set tt to reserved and exit the function
-	if(w == "masu")
-	  tt = VERB;
-	else if(w == "masen")
-	  tt = VERBNEG;
-	else if(w == "mashita")
-	  tt = VERBPAST;
-	else if(w == "masendeshita")
-	  tt = VERBPASTNEG;
-	else if(w == "desu")
-	  tt = IS;
-	else if(w == "deshita")
-	  tt = WAS;
-	else if(w == "o")
-	  tt = OBJECT;
-	else if(w == "wa")
-	  tt = SUBJECT;
-	else if(w == "ni")
-	  tt = DESTINATION;
-	else if(w == "watashi" || w == "anata" || w == "kare" || w == "sore")
-	  tt = PRONOUN;
-	else if(w == "mata" || w == "soshite" || w == "shikashi" || w == "dakara")
-	  tt = CONNECTOR;
-	else
-	  cout << "ERROR: COULDNT FIND TT FOR RESERVED WORD" << endl;
-	return 1;
-      }
+  if(valid == true)
+  {
+    for(int x = 0; x < arrsize; x++)
+    {// check to see if w matches a word from the reserved word list
+
+        if(w == reservedWords[x])
+        { // if it does match set tt to reserved and exit the function
+
+            if(w == "masu")
+                tt = VERB;
+
+            else if(w == "masen")
+                tt = VERBNEG;
+
+            else if(w == "mashita")
+                tt = VERBPAST;
+
+            else if(w == "masendeshita")
+                tt = VERBPASTNEG;
+
+            else if(w == "desu")
+                tt = IS;
+
+            else if(w == "deshita")
+                tt = WAS;
+
+            else if(w == "o")
+                tt = OBJECT;
+
+            else if(w == "wa")
+                tt = SUBJECT;
+
+            else if(w == "ni")
+                tt = DESTINATION;
+
+            else if(w == "watashi" || w == "anata" || w == "kare" || w == "sore")
+                tt = PRONOUN;
+
+            else if(w == "mata" || w == "soshite" || w == "shikashi" || w == "dakara")
+                tt = CONNECTOR;
+
+            else
+                cout << "ERROR: COULDNT FIND TT FOR RESERVED WORD" << endl;
+
+	        return 1;
+        }
     }
     
     char end = w[w.length() - 1]; // to get the last char in w
     
-    if(end == 'a' || end == 'e' || end == 'i' || end == 'o' || end == 'u') //if the last char in the word is a lowercase vowel
+    if(end == 'a' || end == 'e' || end == 'i' || end == 'o' || end == 'u' || end == 'n') //if the last char in the word is a lowercase vowel
       tt = WORD1;
     else if(end == 'I' || end == 'E') //if the last character is I or E
       tt = WORD2;
@@ -357,8 +387,14 @@ int scanner(tokentype& tt, string& w)
 // This will go away after this assignment
 // DO NOT CHANGE THIS!!!!!! 
 // Done by:  Louis
-// int main()
-// {
+//int main()
+//{
+
+
+
+
+
+    //cout << word("apple") << endl;
 //   tokentype thetype;
 //   string theword; 
 //   string filename;
@@ -382,7 +418,7 @@ int scanner(tokentype& tt, string& w)
 //    cout << "End of file is encountered." << endl;
 //    fin.close();
 
-// }// end
+//}// end
 
 
 // HELPER FUNCTIONS ---------------------------------
