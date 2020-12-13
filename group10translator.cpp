@@ -2,7 +2,8 @@
 #include<fstream>
 #include<string>
 #include <stdlib.h>
-#include "FinalScanner.cpp"
+#include <vector>
+#include "group10scanner.cpp"
 using namespace std;
 
 // Function Prototypes
@@ -15,12 +16,10 @@ void verb();
 void be();
 void tense();
 void trace(int trace_type, string name);
+void ClearFile(string file_name);
 
 // Tracing Flag
 bool tracingOn;
-
-// ** Need the updated match and next_token with 2 global vars
-// saved_token and saved_lexeme
 
 // Global buffer for scanner return
 tokentype saved_token;
@@ -29,25 +28,136 @@ tokentype saved_token;
 bool token_available = false;
 
 // Save the lexeme globally
-string saved_lexeme;
+string saved_lexeme = "";
 
-/* INSTRUCTION:  Complete all ** parts.
-   You may use any method to connect this file to scanner.cpp
-   that you had written.  
-  e.g. You can copy scanner.cpp here by:
-          cp ../ScannerFiles/scanner.cpp .  
-       and then append the two files into one: 
-          cat scanner.cpp parser.cpp > myparser.cpp
-*/
+// Save the english word globally
+string saved_E_word = "";
 
 //=================================================
-// File parser.cpp written by Group Number: **
+// File translator.cpp written by Group Number: * 10 *
 //=================================================
+
+// ----- Additions to the parser.cpp ---------------------
+
+// ** Declare Lexicon (i.e. dictionary) that will hold the content of lexicon.txt
+// Make sure it is easy and fast to look up the translation.
+// Do not change the format or content of lexicon.txt 
+//  Done by: * Jesse Cox * 
+
+// Structure of Japanese Word and its english version
+struct word_pair
+{
+   string english_word;
+   string japanese_word;
+};
+
+// Vector to hold word pairs
+vector<word_pair> dictionary;
+
+// ** Additions to parser.cpp here:
+//    getEword() - using the current saved_lexeme, look up the English word
+//                 in Lexicon if it is there -- save the result   
+//                 in saved_E_word
+//  Done by: * Jackson Koshley * 
+void getEword()
+{
+   // loop through dictionary in search of saved lexeme
+   for (size_t i = 0; i < dictionary.size(); i++)
+   {
+      // if found, set saved_E_word to the pair english word
+      if(dictionary[i].japanese_word == saved_lexeme)
+      {
+         saved_E_word = dictionary[i].english_word;
+         return;
+      }    
+   }
+
+   // else, no english equivalent, just set as japanese word
+   saved_E_word = saved_lexeme;
+}
+
+//    gen(line_type) - using the line type,
+//                     sends a line of an IR to translated.txt
+//                     (saved_E_word or saved_token is used)
+//  Done by: * Matthew Flavin*
+void gen(string line_type)
+{
+   // file stream objects
+   ofstream file_output;
+   ifstream file_input;
+
+   string output_line = "";
+
+   // open input and output files
+   file_input.open("translated.txt");
+   file_output.open("translated.txt", ios::app);
+
+   // if input is open
+   if (file_input.is_open())
+   {
+      // if given line type is tense
+      if (line_type == "TENSE")
+      {
+
+         // string to hold the type of tense
+         tokentype tense_type_token;
+         string tense_type_string;
+
+         // if cases to figure out tense type based off saved e word
+         // tense japanese is not translated as far as I am aware
+         if(saved_lexeme == "masu")
+               tense_type_string = "VERB";
+
+         else if(saved_lexeme == "masen")
+               tense_type_string = "VERBNEG";
+
+         else if(saved_lexeme == "mashita")
+               tense_type_string = "VERBPAST";
+
+         else if(saved_lexeme == "masendeshita")
+               tense_type_string = "VERBPASTNEG";
+
+         else if(saved_lexeme == "desu")
+               tense_type_string = "IS";
+
+         else if(saved_lexeme == "deshita")
+               tense_type_string = "WAS";
+
+         else
+            tense_type_string = "COULD NOT FIND TENSE TYPE";
+
+         // output tense
+         output_line = line_type + ": " + tense_type_string + "\n";
+      }
+
+      // else if not tense
+      else
+      {
+         // output type and translated word
+         output_line = line_type + ": " + saved_E_word + "\n";
+      }
+   }  
+
+   // Print output
+   // cout << output_line;
+
+   // Output file
+   file_output << output_line;
+
+   // close file stream objects
+   file_input.close();
+   file_output.close();
+}
+
+
 
 // ----- Four Utility Functions and Globals -----------------------------------
 
 // ** Need syntaxerror1 and syntaxerror2 functions (each takes 2 args)
 //    to display syntax error messages as specified by me.  
+
+
+// PARSER ==============
 
 // Type of error: * Match Failure *
 // Done by: * Jackson Koshley * 
@@ -88,6 +198,7 @@ tokentype next_token()
 // Done by: *Matthew Flavin*
 bool match(tokentype expected)
 {
+
    if (next_token() != expected)
    {
       syntaxerror2(tokenName[expected]);
@@ -121,6 +232,11 @@ void Story()
 
    while (true)
    {
+      ofstream file_output;
+      file_output.open("translated.txt", ios::app);
+      file_output << "\n";
+      file_output.close();
+
       switch(next_token())
       {
          case CONNECTOR:
@@ -146,13 +262,19 @@ void S()
    if (next_token() == CONNECTOR)
    {
       match(CONNECTOR);
+      getEword();
+      gen("CONNECTOR");
    }
 
    // <noun>
    noun();
 
+   getEword();
+
    // SUBJECT
    match(SUBJECT);
+
+   gen("ACTOR");
 
    // After subject
    AS();
@@ -171,17 +293,22 @@ void AS()
    {
       // Check if it starts <verb>
       case WORD2:
-         cout << "ENTER WORD2" << endl;
          verb();
+
+         getEword();
+         gen("ACTION");
+
          tense();
+         gen("TENSE");
+
          match(PERIOD);
          break;
 
       // Check if it starts <noun>
       case WORD1:
       case PRONOUN:
-         cout << "ENTER WORD1/PRONOUN" << endl;
          noun();
+         getEword();
          AN();
          break;
 
@@ -204,18 +331,26 @@ void AN()
       case IS:
       case WAS:
          be();
+         gen("DESCRIPTION");
+         gen("TENSE");
+         // cout << "\n " << saved_lexeme << "\n";
          match(PERIOD);
          break;
 
       case DESTINATION:
          match(DESTINATION);
+         gen("TO");
          verb();
+         getEword();
+         gen("ACTION");
          tense();
+         gen("TENSE");
          match(PERIOD);
          break;
 
       case OBJECT:
          match(OBJECT);
+         gen("OBJECT");
          AO();
          break;
 
@@ -236,16 +371,24 @@ void AO()
    {
       case WORD2:
          verb();
+         getEword();
+         gen("ACTION");
          tense();
+         gen("TENSE");
          match(PERIOD);
          break;
 
       case WORD1:
       case PRONOUN:
          noun();
+         getEword();
          match(DESTINATION);
+         gen("TO");
          verb();
+         getEword();
+         gen("ACTION");
          tense();
+         gen("TENSE");
          match(PERIOD);
          break;
 
@@ -348,19 +491,54 @@ void tense()
 
 string filename;
 
-//----------- Driver ---------------------------
+// ---------------- Driver ---------------------------
 
-// The new test driver to start the parser
-// Done by:  * Jesse Cox *
+// compiled with
+// g++ group10translator.cpp -W -std=c++11
+
+// The final test driver to start the translator
+// Done by:  * Jackson Koshley*
 int main()
 {
    // Tracing flag, set to false if you do not wish to see tracing in the program
    tracingOn = true;
 
+   // clear translator.txt on start of new instance
+   ClearFile("translated.txt");
+
+   // Strings to hold the japanese and english words while storing
+   string j_word, e_word;
+
+   //** opens the lexicon.txt file and reads it into Lexicon
+   ifstream lexicon_file;
+   lexicon_file.open("lexicon.txt");
+
+   while (lexicon_file >> j_word)
+   {
+      // Get E word
+      lexicon_file >> e_word;
+
+      // Create struct tmp
+      word_pair tmp;
+
+      // Set variables
+      tmp.english_word = e_word;
+      tmp.japanese_word = j_word;
+
+      // Add to dictionary
+      dictionary.push_back(tmp);
+   }
+
+   //** closes lexicon.txt 
+   lexicon_file.close();
+
    // Get input for file name
    cout << "Enter the input file name: ";
    cin >> filename;
    fin.open(filename.c_str());
+
+   // Call Story
+   Story();
 
    // check if EOFM
    if (saved_token == EOFM)
@@ -369,14 +547,10 @@ int main()
       return 0;
    }
 
-   // Call Story
-   Story();
-
    // Close File
    fin.close();
 }
 
-// end
 //** require no other input files!
 //** syntax error EC requires producing errors.txt of error messages
 //** tracing On/Off EC requires sending a flag to trace message output functions
@@ -408,4 +582,13 @@ void trace(int trace_type, string name)
          cout << "Invalid Call of trace()" << endl;
       }
    }
+}
+
+// https://stackoverflow.com/a/17033060
+// function to clear file
+void ClearFile(string file_name)
+{
+   ofstream ofs;
+   ofs.open(file_name, std::ofstream::out | std::ofstream::trunc);
+   ofs.close();
 }

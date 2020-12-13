@@ -2,7 +2,7 @@
 #include<fstream>
 #include<string>
 #include <stdlib.h>
-#include "FinalScanner.cpp"
+#include "group10scanner.cpp"
 using namespace std;
 
 // Function Prototypes

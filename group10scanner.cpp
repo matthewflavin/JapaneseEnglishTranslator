@@ -38,7 +38,7 @@ bool word (string word)
         wordType currentState = q0;
 
         // Begin looping through the input word.
-        for (int i = 0; i < word.size(); i++)
+        for (size_t i = 0; i < word.size(); i++)
         {
 
             // Get the current toke at the loop index.
@@ -305,7 +305,7 @@ int scanner(tokentype& tt, string& w)
     return 1;
   }
   else{ // if its not a word or a period it is an error
-    cout << "ERROR: " << w << " was not reconized to be a word or a period!" << endl;
+    cout << "ERROR: " << w << " was not recognized to be a word or a period!" << endl;
     tt = ERROR;
   }
 	/*
@@ -387,14 +387,8 @@ int scanner(tokentype& tt, string& w)
 // This will go away after this assignment
 // DO NOT CHANGE THIS!!!!!! 
 // Done by:  Louis
-//int main()
-//{
-
-
-
-
-
-    //cout << word("apple") << endl;
+// int main()
+// {
 //   tokentype thetype;
 //   string theword; 
 //   string filename;
@@ -418,7 +412,7 @@ int scanner(tokentype& tt, string& w)
 //    cout << "End of file is encountered." << endl;
 //    fin.close();
 
-//}// end
+// }// end
 
 
 // HELPER FUNCTIONS ---------------------------------

@@ -1,0 +1,15 @@
+Script started on Sat 12 Dec 2020 03:13:31 PM PST
+]0;flavi002@empress:~/CS 421/ProjectB[?1034h[flavi002@empress ProjectB]$ g++ group10translator.cpp -W -std=c++11
+]0;flavi002@empress:~/CS 421/ProjectB[flavi002@empress ProjectB]$ ./a.out
+Enter the input file name: partCtest3
+Processing <Story>... 
+Processing <S>... 
+Matched CONNECTOR
+CONNECTOR: Therefore
+Processing <noun>... 
+Matched PRONOUN
+SYNTAX ERROR: unexpected de found in SUBJECT
+]0;flavi002@empress:~/CS 421/ProjectB[flavi002@empress ProjectB]$ exit
+exit
+
+Script done on Sat 12 Dec 2020 03:14:01 PM PST

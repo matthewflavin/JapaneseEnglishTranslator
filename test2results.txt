@@ -1,0 +1,25 @@
+Script started on Sat 12 Dec 2020 03:12:42 PM PST
+]0;flavi002@empress:~/CS 421/ProjectB[?1034h[flavi002@empress ProjectB]$ g++ group10translator.cpp -W -std=c++11
+]0;flavi002@empress:~/CS 421/ProjectB[flavi002@empress ProjectB]$ ./a.out
+Enter the input file name: partCtest2
+Processing <Story>... 
+Processing <S>... 
+Matched CONNECTOR
+CONNECTOR: Then
+Processing <noun>... 
+Matched PRONOUN
+Matched SUBJECT
+ACTOR: I/me
+Processing <AS>... 
+Processing <noun>... 
+Matched WORD1
+Processing <AN>... 
+Processing <be>... 
+Matched IS
+DESCRIPTION: rika
+TENSE: IS
+SYNTAX ERROR: unexpected ne found in PERIOD
+]0;flavi002@empress:~/CS 421/ProjectB[flavi002@empress ProjectB]$ exit
+exit
+
+Script done on Sat 12 Dec 2020 03:13:16 PM PST

@@ -1,0 +1,12 @@
+Script started on Sat 12 Dec 2020 03:14:57 PM PST
+]0;flavi002@empress:~/CS 421/ProjectB[?1034h[flavi002@empress ProjectB]$ g++ group10c[Ktranslator.cpp -W -std=c++11
+]0;flavi002@empress:~/CS 421/ProjectB[flavi002@empress ProjectB]$ ./a.out
+Enter the input file name: partCtest5
+Processing <Story>... 
+Processing <S>... 
+Processing <noun>... 
+SYNTAX ERROR: unexpected wa found in NOUN
+]0;flavi002@empress:~/CS 421/ProjectB[flavi002@empress ProjectB]$ exit
+exit
+
+Script done on Sat 12 Dec 2020 03:15:38 PM PST
